@@ -95,7 +95,7 @@ class Archiver:
             assert 'output_filename' in kwargs
             command_args = [
                 self._get_7za_executable(), command, '-tzip', '-mx=9', '-y']
-            if self.settings.get('symlinks', False):
+            if self.settings.get('symlinks', False) and not is_win():
                 command_args.append('-l')
             if password:
                 command_args.append('-p%s' % password)
