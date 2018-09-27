@@ -26,7 +26,7 @@ class UploadCommand(
         self.view = None
         self.prompt_label = "Enter archive passphrase (will be hidden)"
         self.on_done_callback = self.pack_and_send_async
-        self.on_cancel_callback = self.pack_and_send_async
+        self.on_cancel_callback = self.abort
 
     def post_send(self, clear=True):
         """
@@ -37,6 +37,14 @@ class UploadCommand(
         self.running = False
         self.archive_filename = None
         self.prompt_value = ''
+
+    def abort(self):
+        """
+        Aborts packing and sending
+        """
+        self.set_message("No password supplied : aborting.")
+        logger.warn('No password supplied. Aborting...')
+        self.post_send()
 
     def pack_and_send(self):
         """
@@ -52,8 +60,7 @@ class UploadCommand(
             if self.local_backup:
                 shutil.copy(self.archive_filename, self.archives_path)
                 self.set_timed_message(
-                    "Archive successfully copied. Make a donation at "
-                    "http://sublimall.org/donate !",
+                    "Archive successfully copied.",
                     time=10,
                     clear=True)
                 self.post_send()
@@ -195,8 +202,7 @@ class UploadCommand(
 
         if r.status_code == 201:
             self.set_timed_message(
-                "Successfully sent archive. Make a donation at "
-                "http://sublimall.org/donate !",
+                "Successfully sent archive.",
                 time=10,
                 clear=True)
             logger.info('HTTP [%s] Successfully sent archive' % r.status_code)
