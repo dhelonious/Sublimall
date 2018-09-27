@@ -63,7 +63,6 @@ class CommandWithHiddenPrompt(object):
         super().__init__(*args, **kwargs)
 
     def on_cancel_wrapper(self, *args, **kwargs):
-        self.prompt_value = None
         return self.on_cancel_callback('', *args, **kwargs)
 
     def on_done_wrapper(self, *args, **kwargs):
